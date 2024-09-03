@@ -1,10 +1,17 @@
 Package: HCVisR
-Title: What the Package Does (One Line, Title Case)
+Title: A Shiny App for Simulating and Visualizing Time Series on the H x C Plane
 Version: 0.0.0.9000
 Authors@R: 
     person("Alex", "Koh", , "alexkzw@outlook.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: This package contains a Shiny app that simulates, reads, and "mix"
+    time series data points and visualise them on the H x C Plane.
+Depends: R (>= 4.0)
+Imports: 
+  shiny,
+  ggplot2,
+  StatOrdPattHxC,
+  statcomp    
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
