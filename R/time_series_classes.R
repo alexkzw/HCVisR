@@ -17,7 +17,20 @@ new_timeseries <- function(series, model, class = character()) {
     )
 }
 
-# StochasticTS constructor (including colored noise)
+#' StochasticTS Constructor
+#'
+#' Creates a stochastic time series object based on the specified model and parameters.
+#'
+#' @param model Character string specifying the stochastic model (e.g., "AR", "ARMA").
+#' @param phi Numeric value representing the AR coefficient.
+#' @param theta Numeric value representing the MA coefficient.
+#' @param differencing Integer for differencing order (default is 0).
+#' @param n Integer representing the number of points in the time series.
+#' @param color Character string representing the noise color (e.g., "white", "pink", "red").
+#' @return A stochastic time series object.
+#' @importFrom stats arima.sim
+#' @importFrom tuneR noise
+#' @export
 new_stochastic_ts <- function(model = "WN", phi = NULL, theta = NULL, differencing = 0, n = 200, color = NULL) {
     # Set phi and theta to safe values for stationary AR(1) and ARMA(1) models
     if (model == "AR") {

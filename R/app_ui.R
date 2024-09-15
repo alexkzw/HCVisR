@@ -3,6 +3,7 @@
 #' This function sets up the user interface for the Shiny app, arranging inputs
 #' and outputs in a sidebar layout.
 #'
+#' @param request Internal parameter for `{shiny}`. Do not remove.
 #' @import shiny
 #' @export
 app_ui <- function(request) {

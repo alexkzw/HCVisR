@@ -20,7 +20,7 @@ mod_file_upload_ui <- function(id) {
 #'
 #' @param id A namespace identifier for the server logic
 #' @param available_series Reactive variable to store the available series
-#' @import shiny
+#' @importFrom utils read.csv
 #' @export
 mod_file_upload_server <- function(id, available_series) {
     moduleServer(id, function(input, output, session) {
@@ -32,7 +32,7 @@ mod_file_upload_server <- function(id, available_series) {
             }
             req(input$file)
             tryCatch({
-                file_data <- read.csv(input$file$datapath, header = TRUE)
+                file_data <- utils::read.csv(input$file$datapath, header = TRUE)
                 time_series_column <- file_data[[1]]  # Assume the first column contains the time series
                 ts_obj <- new_timeseries(series = time_series_column, model = input$file$name)  # Use filename as model name
                 available_series(c(available_series(), list(ts_obj)))  # Add to available series

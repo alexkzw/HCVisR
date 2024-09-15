@@ -20,18 +20,15 @@ mod_plot_ui <- function(id) {
 #' @param id A namespace identifier for the plotting operations
 #' @param selected_series_data Data selected for plotting
 #' @param embedding_dimension The dimension used for embedding plots
-#' @import shiny
 #' @import ggplot2
+#' @importFrom StatOrdPattHxC HShannon OPprob StatComplexity
 #' @export
 mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
     moduleServer(id, function(input, output, session) {
 
-        # Time series plot
         output$plot_ts <- renderPlot({
             ts_data <- selected_series_data()
-
-            # Ensure we have valid data to plot
-            req(ts_data)
+            req(ts_data)  # Ensure ts_data is not NULL
 
             ggplot(data.frame(x = seq_along(ts_data$series), y = ts_data$series), aes(x = x, y = y)) +
                 geom_line(color = "blue") +
@@ -42,17 +39,15 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
         # H x C plane plot with user-selected embedding dimension
         output$plot_hc <- renderPlot({
             ts_data <- selected_series_data()
-
-            # Ensure we have valid data for H x C calculation
-            req(ts_data)
+            req(ts_data)  # Ensure ts_data is not NULL
 
             emb <- embedding_dimension()  # Get the selected embedding dimension
             H_value <- HShannon(OPprob(ts_data$series, emb = emb))
             C_value <- StatComplexity(OPprob(ts_data$series, emb = emb))
 
-            ggplot(subset(LinfLsup, Side == "Lower" & Dimension == emb), aes(x = H, y = C, col = Dimension, group = Dimension)) +
+            ggplot(subset(StatOrdPattHxC::LinfLsup, Side == "Lower" & Dimension == emb), aes(x = H, y = C, col = Dimension, group = Dimension)) +
                 geom_line() +
-                geom_line(data = subset(LinfLsup, Side == "Upper" & Dimension == emb), aes(x = H, y = C, col = Dimension, group = Dimension)) +
+                geom_line(data = subset(StatOrdPattHxC::LinfLsup, Side == "Upper" & Dimension == emb), aes(x = H, y = C, col = Dimension, group = Dimension)) +
                 geom_point(aes(x = H_value, y = C_value), color = "blue", size = 3) +
                 geom_text(aes(x = H_value, y = C_value, label = paste0("H: ", round(H_value, 3), "\nC: ", round(C_value, 3))),
                           vjust = -1.5, color = "black") +  # Add text labels above the point

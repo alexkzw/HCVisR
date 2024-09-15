@@ -66,6 +66,7 @@ mod_time_series_ui <- function(id) {
 #'
 #' @param id A namespace identifier for the generation logic
 #' @param available_series Reactive variable to store the generated series
+#' @param series_counters Reactive value tracking the number of each type of series
 #' @import shiny
 #' @export
 mod_time_series_server <- function(id, available_series, series_counters) {

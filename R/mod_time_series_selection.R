@@ -53,16 +53,23 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
 
         # Reactive function to apply the operation if needed
         selected_series_data <- reactive({
-            # Ensure the selected series is available
+            # Ensure that selected series exist and are not NULL
+            req(input$selected_series)
             selected_series <- input$selected_series
             if (is.null(selected_series) || length(selected_series) < 1) return(NULL)
 
-            # Get the selected time series data
             ts_list <- available_series()
             selected_ts_data <- ts_list[sapply(ts_list, function(ts) ts$model) %in% selected_series]
 
-            # If only one series is selected or operator is "NULL", return the first series
+            # Make sure that we have valid data before proceeding
+            req(selected_ts_data)
+            if (length(selected_ts_data) == 0) return(NULL)
+
+            # Check if there's only one series selected or if 'NULL' operator is selected
             if (length(selected_ts_data) == 1 || input$operator == "NULL") {
+                if (is.null(selected_ts_data[[1]]$series) || is.null(selected_ts_data[[1]]$model)) {
+                    return(NULL)  # Return NULL if there is no valid series data
+                }
                 return(list(series = selected_ts_data[[1]]$series, model = selected_ts_data[[1]]$model))
             }
 
