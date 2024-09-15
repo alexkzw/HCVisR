@@ -1,0 +1,22 @@
+* installing *source* package ‘HCVisR’ ...
+** using staged installation
+** libs
+clang++ -mmacosx-version-min=10.13 -std=gnu++14 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Library/Frameworks/R.framework/Versions/4.2/Resources/library/Rcpp/include' -I/usr/local/include   -fPIC  -Wall -g -O2  -c RcppExports.cpp -o RcppExports.o
+clang++ -mmacosx-version-min=10.13 -std=gnu++14 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Library/Frameworks/R.framework/Versions/4.2/Resources/library/Rcpp/include' -I/usr/local/include   -fPIC  -Wall -g -O2  -c time_series_operators.cpp -o time_series_operators.o
+clang++ -mmacosx-version-min=10.13 -std=gnu++14 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress -L/Library/Frameworks/R.framework/Resources/lib -L/usr/local/lib -o HCVisR.so RcppExports.o time_series_operators.o -F/Library/Frameworks/R.framework/.. -framework R -Wl,-framework -Wl,CoreFoundation
+installing to /Users/alex/HCVisR/check_results_with_rcpp/HCVisR.Rcheck/00LOCK-HCVisR/00new/HCVisR/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+Warning: replacing previous import ‘dplyr::filter’ by ‘stats::filter’ when loading ‘StatOrdPattHxC’
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+Warning: replacing previous import ‘dplyr::filter’ by ‘stats::filter’ when loading ‘StatOrdPattHxC’
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+Warning: replacing previous import ‘dplyr::filter’ by ‘stats::filter’ when loading ‘StatOrdPattHxC’
+** testing if installed package keeps a record of temporary installation path
+* DONE (HCVisR)
