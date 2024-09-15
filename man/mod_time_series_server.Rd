@@ -10,6 +10,8 @@ mod_time_series_server(id, available_series, series_counters)
 \item{id}{A namespace identifier for the generation logic}
 
 \item{available_series}{Reactive variable to store the generated series}
+
+\item{series_counters}{Reactive value tracking the number of each type of series}
 }
 \description{
 Handles the generation of time series based on user inputs.

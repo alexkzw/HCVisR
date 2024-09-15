@@ -6,6 +6,9 @@
 \usage{
 app_ui(request)
 }
+\arguments{
+\item{request}{Internal parameter for \code{{shiny}}. Do not remove.}
+}
 \description{
 This function sets up the user interface for the Shiny app, arranging inputs
 and outputs in a sidebar layout.
