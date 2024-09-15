@@ -1,6 +1,10 @@
-# Handling time series selection and operator logic
-
-# UI for selecting time series
+#' Time Series Selection UI Module
+#'
+#' Creates UI elements for selecting and operating on time series data.
+#'
+#' @param id A namespace identifier for the selection elements
+#' @import shiny
+#' @export
 mod_time_series_selection_ui <- function(id) {
     ns <- NS(id)
     tagList(
@@ -11,7 +15,15 @@ mod_time_series_selection_ui <- function(id) {
     )
 }
 
-# Time series selection server with operator selection
+#' Server Logic for Time Series Selection
+#'
+#' Manages the selection and operation on time series data from the server side.
+#'
+#' @param id A namespace identifier for the selection operations
+#' @param available_series Reactive list of available series
+#' @param selected_series Reactive value of selected series
+#' @import shiny
+#' @export
 mod_time_series_selection_server <- function(id, available_series, selected_series) {
     moduleServer(id, function(input, output, session) {
 

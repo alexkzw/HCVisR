@@ -1,4 +1,10 @@
-# File upload UI module
+#' File Upload UI Module
+#'
+#' Generates UI elements for uploading files.
+#'
+#' @param id A namespace identifier for the UI elements
+#' @import shiny
+#' @export
 mod_file_upload_ui <- function(id) {
     ns <- NS(id)
     tagList(
@@ -8,6 +14,14 @@ mod_file_upload_ui <- function(id) {
     )
 }
 
+#' Server Logic for File Upload
+#'
+#' Handles the server-side logic for file uploads, reading and processing the uploaded files.
+#'
+#' @param id A namespace identifier for the server logic
+#' @param available_series Reactive variable to store the available series
+#' @import shiny
+#' @export
 mod_file_upload_server <- function(id, available_series) {
     moduleServer(id, function(input, output, session) {
         observeEvent(input$process_file, {

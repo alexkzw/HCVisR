@@ -1,6 +1,10 @@
-# Define UI and server logic for time series generation module
-
-# UI for Time Series input module
+#' Time Series Generation UI Module
+#'
+#' Provides UI components for configuring the generation of time series.
+#'
+#' @param id A namespace identifier for the time series elements
+#' @import shiny
+#' @export
 mod_time_series_ui <- function(id) {
     ns <- NS(id)
     tagList(
@@ -56,7 +60,14 @@ mod_time_series_ui <- function(id) {
     )
 }
 
-# Time series generation module (Update selected_series on generation)
+#' Server Logic for Time Series Generation
+#'
+#' Handles the generation of time series based on user inputs.
+#'
+#' @param id A namespace identifier for the generation logic
+#' @param available_series Reactive variable to store the generated series
+#' @import shiny
+#' @export
 mod_time_series_server <- function(id, available_series, series_counters) {
     moduleServer(id, function(input, output, session) {
         observeEvent(input$generate, {

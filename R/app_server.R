@@ -1,6 +1,13 @@
-#Main logic of the shiny app - coordinates inputs and manages the reactive flows
-#Calls each module and handles how these modules interact with each other
-
+#' Main Server Function for Shiny App
+#'
+#' This function handles the server-side logic of the Shiny app, coordinating
+#' reactive elements and module server functions.
+#'
+#' @param input Shiny server input
+#' @param output Shiny server output
+#' @param session User session information
+#' @import shiny
+#' @export
 app_server <- function(input, output, session) {
     # Reactive list to store available time series
     available_series <- reactiveVal(list())

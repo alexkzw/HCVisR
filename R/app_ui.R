@@ -1,4 +1,10 @@
-# R/app_ui.R
+#' UI Setup for Shiny App
+#'
+#' This function sets up the user interface for the Shiny app, arranging inputs
+#' and outputs in a sidebar layout.
+#'
+#' @import shiny
+#' @export
 app_ui <- function(request) {
     fluidPage(
         titlePanel("Time Series Generation and H x C Visualisation"),

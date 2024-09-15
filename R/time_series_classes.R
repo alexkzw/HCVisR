@@ -1,4 +1,12 @@
-# Base class constructor for time series
+#' Time Series Object Constructor
+#'
+#' Constructs a new time series object with specified attributes.
+#'
+#' @param series Numeric vector representing the time series data
+#' @param model Character string naming the model used to generate the series
+#' @param class Additional classes to assign to the time series object
+#' @return An object of class 'TimeSeries' along with any specified additional classes
+#' @export
 new_timeseries <- function(series, model, class = character()) {
     structure(
         list(

@@ -1,4 +1,10 @@
-# Time series plot module UI
+#' Plotting Module UI
+#'
+#' Constructs UI elements for plotting time series data.
+#'
+#' @param id A namespace identifier for the plot elements
+#' @import shiny
+#' @export
 mod_plot_ui <- function(id) {
     ns <- NS(id)
     tagList(
@@ -7,7 +13,16 @@ mod_plot_ui <- function(id) {
     )
 }
 
-# Time series plot module server with dynamic embedding dimension
+#' Server Logic for Plotting Module
+#'
+#' Manages server-side operations for generating plots based on user-selected data.
+#'
+#' @param id A namespace identifier for the plotting operations
+#' @param selected_series_data Data selected for plotting
+#' @param embedding_dimension The dimension used for embedding plots
+#' @import shiny
+#' @import ggplot2
+#' @export
 mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
     moduleServer(id, function(input, output, session) {
 
