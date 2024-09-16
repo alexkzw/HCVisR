@@ -15,8 +15,7 @@ Imports:
   tuneR,
   stats,
   utils,
-  Rcpp,
-  microbenchmark
+  Rcpp
 LinkingTo: Rcpp
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -24,7 +23,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 URL: https://github.com/alexkzw/HCVisR
 BugReports: https://github.com/alexkzw/HCVisR/issues
-Suggests: 
+Suggests:
+    microbenchmark,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
