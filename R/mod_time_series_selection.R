@@ -77,22 +77,20 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
             req(input$operator)
             req(input$alpha)
 
-            alpha <- input$alpha
-            combined_series <- selected_ts_data[[1]]$series
-            model_name <- paste(input$operator, "combination of", paste(input$selected_series, collapse = ", "))
+            # Prepare the time series list for the C++ function
+            ts_series_list <- lapply(selected_ts_data, function(ts) ts$series)
 
-            # Apply the selected operator
-            for (i in 2:length(selected_ts_data)) {
-                next_series <- selected_ts_data[[i]]$series
-
-                if (input$operator == "+") {
-                    combined_series <- alpha * combined_series + (1 - alpha) * next_series
-                } else if (input$operator == "*") {
-                    combined_series <- alpha * combined_series * (1 - alpha) * next_series
-                }
+            # Apply the selected operator using the C++ function
+            combined_series <- NULL
+            if (input$operator == "+") {
+                combined_series <- time_series_operations_cpp(ts_series_list, "add", input$alpha)
+            } else if (input$operator == "*") {
+                combined_series <- time_series_operations_cpp(ts_series_list, "multiply", input$alpha)
             }
 
-            return(list(series = combined_series, model = model_name))
+            model_name <- paste(input$operator, "combination of", paste(input$selected_series, collapse = ", "))
+
+            return(list(series = combined_series$result, model = model_name))
         })
 
         return(selected_series_data)
