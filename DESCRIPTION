@@ -26,5 +26,7 @@ BugReports: https://github.com/alexkzw/HCVisR/issues
 Suggests:
     microbenchmark,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3
