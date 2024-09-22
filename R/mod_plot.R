@@ -30,10 +30,11 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
             ts_data <- selected_series_data()
             req(ts_data)  # Ensure ts_data is not NULL
 
-            ggplot(data.frame(x = seq_along(ts_data$series), y = ts_data$series), aes(x = x, y = y)) +
-                geom_line(color = "blue") +
-                labs(title = ts_data$model, x = "Time", y = "Value") +
-                theme_minimal()
+            # Wrap the data back into a TimeSeries object if it's not already one
+            ts_obj <- new_timeseries(series = ts_data$series, model = ts_data$model)
+
+            # Now use the plot method for the TimeSeries object
+            plot(ts_obj)
         })
 
         # H x C plane plot with user-selected embedding dimension

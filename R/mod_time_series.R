@@ -120,6 +120,10 @@ mod_time_series_server <- function(id, available_series, series_counters) {
                 ts_obj$model <- model_name
                 available_series(c(available_series(), list(ts_obj)))
                 selected_series(model_name)  # Automatically select the latest series
+
+                # Call the print and summary methods for diagnostics
+                print(ts_obj)
+                summary(ts_obj)
             }
         })
     })
