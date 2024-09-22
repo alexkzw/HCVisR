@@ -55,19 +55,20 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
         selected_series_data <- reactive({
             # Ensure that selected series exist and are not NULL
             req(input$selected_series)
+
             selected_series <- input$selected_series
-            if (is.null(selected_series) || length(selected_series) < 1) return(NULL)
+            if (!isTruthy(selected_series)) return(NULL)
 
             ts_list <- available_series()
             selected_ts_data <- ts_list[sapply(ts_list, function(ts) ts$model) %in% selected_series]
 
             # Make sure that we have valid data before proceeding
             req(selected_ts_data)
-            if (length(selected_ts_data) == 0) return(NULL)
+            if (!isTruthy(selected_ts_data)) return(NULL)
 
             # Check if there's only one series selected or if 'NULL' operator is selected
-            if (length(selected_ts_data) == 1 || input$operator == "NULL") {
-                if (is.null(selected_ts_data[[1]]$series) || is.null(selected_ts_data[[1]]$model)) {
+            if (length(selected_ts_data) == 1 || !isTruthy(input$operator) || input$operator == "NULL") {
+                if (!isTruthy(selected_ts_data[[1]]$series) || !isTruthy(selected_ts_data[[1]]$model)) {
                     return(NULL)  # Return NULL if there is no valid series data
                 }
                 return(list(series = selected_ts_data[[1]]$series, model = selected_ts_data[[1]]$model))
@@ -77,22 +78,19 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
             req(input$operator)
             req(input$alpha)
 
-            # Prepare the time series list for the C++ function
-            ts_series_list <- lapply(selected_ts_data, function(ts) ts$series)
-
-            # Apply the selected operator using the C++ function
+            # Use the combine method for the selected time series
             combined_series <- NULL
             if (input$operator == "+") {
-                combined_series <- time_series_operations_cpp(ts_series_list, "add", input$alpha)
+                combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = "add", alpha = input$alpha)
             } else if (input$operator == "*") {
-                combined_series <- time_series_operations_cpp(ts_series_list, "multiply", input$alpha)
+                combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = "multiply", alpha = input$alpha)
             }
 
             model_name <- paste(input$operator, "combination of", paste(input$selected_series, collapse = ", "))
-
-            return(list(series = combined_series$result, model = model_name))
+            return(list(series = combined_series$series, model = model_name))
         })
 
         return(selected_series_data)
     })
 }
+
