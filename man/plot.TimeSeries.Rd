@@ -12,5 +12,5 @@
 \item{...}{Additional arguments for plotting.}
 }
 \description{
-Visualizes the time series data.
+Visualizes the time series data using ggplot2.
 }
