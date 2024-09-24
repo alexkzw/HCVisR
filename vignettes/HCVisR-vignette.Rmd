@@ -1,0 +1,45 @@
+---
+title: "HCVisR: Time Series Generation and H x C Visualisation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HCVisR: Time Series Generation and H x C Visualisation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Overview
+
+`HCVisR` is a Shiny-based R package for generating time series and visualising them on the H x C (Entropy and Complexity) plane. This package allows users to generate both stochastic and deterministic time series and perform basic operations like addition and multiplication on selected time series.
+
+# Installation
+
+You can install the development version from GitHub:
+
+```{r}
+# install.packages("remotes")
+#remotes::install_github("alexkzw/HCVisR")
+```
+
+# Basic Usage
+
+To start the Shiny app, use the following command:
+
+```{r}
+library(HCVisR)
+#HCVisR::app_ui()
+```
+
+The app provides options for generating and uploading time series. Users can visualise the time series and see its position on the H x C plane based on the selected embedding dimension.
+
+# Example
+
+Here’s an example of how to generate a stochastic AR(1) time series and visualise it:
+```{r}
+# Generate AR(1) Time Series
+ts_ar <- new_stochastic_ts("AR", n = 200, phi = 0.5)
+
+# Print and visualize the series
+print(ts_ar)
+plot(ts_ar)
+```
+
