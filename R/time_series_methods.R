@@ -4,6 +4,7 @@
 #'
 #' @param x An object of class 'TimeSeries'.
 #' @param ... Additional arguments for printing.
+#' @importFrom utils head
 #' @export
 print.TimeSeries <- function(x, ...) {
     cat("Time Series Model: ", x$model, "\n")
