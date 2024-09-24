@@ -33,18 +33,27 @@ summary.TimeSeries <- function(object, ...) {
 
 #' Plot method for TimeSeries objects
 #'
-#' Visualizes the time series data.
+#' Visualizes the time series data using ggplot2.
 #'
 #' @param x An object of class 'TimeSeries'.
 #' @param ... Additional arguments for plotting.
+#' @importFrom ggplot2 ggplot aes geom_line theme_minimal labs
 #' @export
 plot.TimeSeries <- function(x, ...) {
+    # Extract the series and model from the TimeSeries object
     series <- x$series
     model <- x$model
 
-    plot(seq_along(series), series, type = "l", col = "blue",
-         main = paste("Time Series Plot: ", model),
-         xlab = "Time", ylab = "Value")
+    # Create a dataframe for ggplot2
+    data <- data.frame(Time = seq_along(series), Value = series)
+
+    # Generate the plot using ggplot2
+    ggplot(data, aes(x = Time, y = Value)) +
+        geom_line(color = "blue") +  # Draw the line
+        labs(title = paste("Time Series Plot:", model),
+             x = "Time",
+             y = "Value") +
+        theme_minimal()  # Use the minimal theme
 }
 
 #' Combine two TimeSeries objects
