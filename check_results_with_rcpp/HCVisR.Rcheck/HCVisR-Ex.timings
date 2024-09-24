@@ -1,3 +1,0 @@
-name	user	system	elapsed
-benchmark_time_series_operations	0.400	0.043	0.514	
-time_series_operations_cpp	0.003	0.005	0.007	
