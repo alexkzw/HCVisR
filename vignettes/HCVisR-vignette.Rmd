@@ -15,7 +15,7 @@ vignette: >
 
 You can install the development version from GitHub:
 
-```{r}
+```{r, eval = FALSE}
 # install.packages("remotes")
 #remotes::install_github("alexkzw/HCVisR")
 ```
@@ -34,12 +34,63 @@ The app provides options for generating and uploading time series. Users can vis
 # Example
 
 Here’s an example of how to generate a stochastic AR(1) time series and visualise it:
-```{r}
+```{r fig.width=7}
 # Generate AR(1) Time Series
 ts_ar <- new_stochastic_ts("AR", n = 200, phi = 0.5)
 
-# Print and visualize the series
+# Print the time series
 print(ts_ar)
+
+# Visualise the time series
 plot(ts_ar)
+
+# Get a summary of the series
+summary(ts_ar)
+```
+
+User can generate another stochastic time series and explore it with the same object-oriented methods:
+```{r fig.width=7}
+# Generate White Noise Time Series
+ts_wn <- new_stochastic_ts("WN", n = 200)
+
+# Print the time series
+print(ts_wn)
+
+# Visualise the time series
+plot(ts_wn)
+
+# Get a summary of the series
+summary(ts_wn)
+```
+
+Users can then combine two time series via addition or multiplication. Below is an example of combining the previously generated AR(1) and the white noise time series:
+
+```{r fig.width=7}
+# Combine AR(1) and White Noise time series using addition
+combined_add <- combine.TimeSeries(ts_ar, ts_wn, method = "add", alpha = 0.5)
+
+# Print the combined series
+print(combined_add)
+
+# Visualize the combined series
+plot(combined_add)
+
+# Get a summary of the combined series
+summary(combined_add)
+```
+
+You can also combine them using multiplication:
+```{r fig.width=7}
+# Combine AR(1) and White Noise time series using multiplication
+combined_multiply <- combine.TimeSeries(ts_ar, ts_wn, method = "multiply", alpha = 0.5)
+
+# Print the combined series
+print(combined_multiply)
+
+# Visualize the combined series
+plot(combined_multiply)
+
+# Get a summary of the combined series
+summary(combined_multiply)
 ```
 
