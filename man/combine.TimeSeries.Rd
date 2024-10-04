@@ -20,5 +20,5 @@ A new TimeSeries object with the combined series.
 }
 \description{
 Combines two TimeSeries objects using addition or multiplication,
-and utilizes Rcpp for the actual operations.
+utilizing the Rcpp function for performance.
 }
