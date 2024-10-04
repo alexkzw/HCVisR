@@ -11,5 +11,5 @@ app_ui(request)
 }
 \description{
 This function sets up the user interface for the Shiny app, arranging inputs
-and outputs in a sidebar layout.
+and outputs with a fixed resolution and responsive layout.
 }

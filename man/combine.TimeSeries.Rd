@@ -2,7 +2,7 @@
 % Please edit documentation in R/time_series_methods.R
 \name{combine.TimeSeries}
 \alias{combine.TimeSeries}
-\title{Combine two TimeSeries objects}
+\title{Combine two TimeSeries objects using Rcpp}
 \usage{
 combine.TimeSeries(ts1, ts2, method = "add", alpha = 0.5)
 }
@@ -19,5 +19,6 @@ combine.TimeSeries(ts1, ts2, method = "add", alpha = 0.5)
 A new TimeSeries object with the combined series.
 }
 \description{
-Combines two TimeSeries objects using addition or multiplication.
+Combines two TimeSeries objects using addition or multiplication,
+and utilizes Rcpp for the actual operations.
 }
