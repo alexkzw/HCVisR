@@ -17,23 +17,23 @@ mod_time_series_ui <- function(id) {
 
             conditionalPanel(
                 condition = paste0("input['", ns("stochastic_model"), "'] == 'WN'"),
-                numericInput(ns("n_wn"), "Length of Time Series (n):", value = 200, min = 200, max = 1000, step = 100)
+                numericInput(ns("n_wn"), "Length of Time Series (n):", value = 300, min = 100, max = 1000, step = 100)
             ),
 
             conditionalPanel(
                 condition = paste0("input['", ns("stochastic_model"), "'] == 'AR(1)'"),
-                numericInput(ns("n_ar"), "Length of Time Series (n):", value = 200, min = 200, max = 1000, step = 100)
+                numericInput(ns("n_ar"), "Length of Time Series (n):", value = 300, min = 100, max = 1000, step = 100)
             ),
 
             conditionalPanel(
                 condition = paste0("input['", ns("stochastic_model"), "'] == 'ARMA(1,1)'"),
-                numericInput(ns("n_arma"), "Length of Time Series (n):", value = 200, min = 200, max = 1000, step = 100)
+                numericInput(ns("n_arma"), "Length of Time Series (n):", value = 300, min = 100, max = 1000, step = 100)
             ),
             # Colored noise UI
             conditionalPanel(
                 condition = paste0("input['", ns("stochastic_model"), "'] == 'Colored Noise'"),
                 selectInput(ns("colored_noise_type"), "Choose Noise Color:", choices = c("white", "pink", "red")),
-                numericInput(ns("n_colored_noise"), "Length of Time Series (n):", value = 200, min = 200, max = 1000, step = 100)
+                numericInput(ns("n_colored_noise"), "Length of Time Series (n):", value = 300, min = 100, max = 1000, step = 100)
             )
         ),
         # Deterministic model selection with new time series options
@@ -44,13 +44,13 @@ mod_time_series_ui <- function(id) {
 
             conditionalPanel(
                 condition = paste0("input['", ns("deterministic_model"), "'] == 'logistic'"),
-                numericInput(ns("n_logistic"), "Length of Time Series (N):", value = 300),
+                numericInput(ns("n_logistic"), "Length of Time Series (N):", value = 300, min = 100, max = 1000, step = 100),
                 numericInput(ns("r_logistic"), "Logistic Map Parameter (r):", value = 4, min = 0, max = 4, step = 0.1)  # Added this for r
             ),
 
             conditionalPanel(
                 condition = paste0("input['", ns("deterministic_model"), "'] == 'henon'"),
-                numericInput(ns("n_henon"), "Length of Time Series (N):", value = 300),
+                numericInput(ns("n_henon"), "Length of Time Series (N):", value = 300, min = 100, max = 1000, step = 100),
                 numericInput(ns("a_henon"), "Henon Map Parameter (a):", value = 1.4, min = 0, max = 2),
                 numericInput(ns("b_henon"), "Henon Map Parameter (b):", value = 0.3, min = 0, max = 1)
             )
