@@ -56,9 +56,10 @@ plot.TimeSeries <- function(x, ...) {
         theme_minimal()  # Use the minimal theme
 }
 
-#' Combine two TimeSeries objects
+#' Combine two TimeSeries objects using Rcpp
 #'
-#' Combines two TimeSeries objects using addition or multiplication.
+#' Combines two TimeSeries objects using addition or multiplication,
+#' utilizing the Rcpp function for performance.
 #'
 #' @param ts1 The first TimeSeries object.
 #' @param ts2 The second TimeSeries object.
@@ -71,13 +72,10 @@ combine.TimeSeries <- function(ts1, ts2, method = "add", alpha = 0.5) {
         stop("Time series must be of equal length to combine.")
     }
 
-    series1 <- ts1$series
-    series2 <- ts2$series
+    # Call the Rcpp function to perform the operation
+    combined_result <- time_series_operations_cpp(list(ts1$series, ts2$series), method, alpha)
 
-    combined_series <- switch(method,
-                              "add" = alpha * series1 + (1 - alpha) * series2,
-                              "multiply" = alpha * series1 * (1 - alpha) * series2,
-                              stop("Invalid method: choose 'add' or 'multiply'."))
-
-    new_timeseries(series = combined_series, model = paste(ts1$model, "+", ts2$model))
+    # Return the new combined time series
+    new_timeseries(series = combined_result$result, model = paste(ts1$model, "+", ts2$model))
 }
+
