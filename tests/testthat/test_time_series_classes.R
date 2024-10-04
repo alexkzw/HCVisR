@@ -31,9 +31,12 @@ test_that("Time series constructors work for all models", {
     ts_logistic <- new_deterministic_ts(model = "logistic", N = 100, r = 3.9)
     expect_equal(ts_logistic$model, "logistic")
     expect_equal(length(ts_logistic$series), 100)
+    # ensure no infinite values
+    expect_false(any(is.infinite(ts_logistic$series)), info = "Logistic map should not contain infinite values")
 
     # Test Henon Map (Deterministic)
-    ts_henon <- new_deterministic_ts(model = "henon", N = 100, a = 1.4, b = 0.3)
+    ts_henon <- new_deterministic_ts(model = "henon", N = 100, a = 1.4, b = 0.3, x0 = 0.1, y0 = 0.1)
     expect_equal(ts_henon$model, "henon")
     expect_equal(length(ts_henon$series), 100)
+    expect_false(any(is.infinite(ts_henon$series)), info = "Henon map should not contain infinite values")
 })
