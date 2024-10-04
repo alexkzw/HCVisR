@@ -90,10 +90,10 @@ mod_time_series_server <- function(id, available_series, series_counters) {
                 model <- input$stochastic_model
                 if (model == "WN") {
                     ts_obj <- new_stochastic_ts(model = model, n = input$n_wn)
-                } else if (model == "AR(1)") {  # Fix here: Change "AR" to "AR(1)"
+                } else if (model == "AR(1)") {
                     # AR(1) Model
                     ts_obj <- new_stochastic_ts(model = "AR", phi = 0.5, n = input$n_ar)
-                } else if (model == "ARMA(1,1)") {  # Fix here: Change "ARMA" to "ARMA(1,1)"
+                } else if (model == "ARMA(1,1)") {
                     # ARMA(1,1) Model
                     ts_obj <- new_stochastic_ts(model = "ARMA", phi = 0.5, theta = 0.4, n = input$n_arma)
                 } else if (model == "Colored Noise") {
