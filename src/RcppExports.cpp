@@ -11,13 +11,13 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // time_series_operations
-List time_series_operations(List ts_list, String op, double alpha);
+List time_series_operations(List ts_list, std::string op, double alpha);
 RcppExport SEXP _HCVisR_time_series_operations(SEXP ts_listSEXP, SEXP opSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type ts_list(ts_listSEXP);
-    Rcpp::traits::input_parameter< String >::type op(opSEXP);
+    Rcpp::traits::input_parameter< std::string >::type op(opSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     rcpp_result_gen = Rcpp::wrap(time_series_operations(ts_list, op, alpha));
     return rcpp_result_gen;
