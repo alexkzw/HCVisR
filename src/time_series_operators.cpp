@@ -2,32 +2,31 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List time_series_operations(List ts_list, String op, double alpha) {
-    int n = as<NumericVector>(ts_list[0]).size();
-    NumericVector result(n, 0.0);  // Initialize result to 0.0
+List time_series_operations(List ts_list, std::string op, double alpha) {
+    // Extract the time series from the list
+    NumericVector ts1 = as<NumericVector>(ts_list[0]);  // First series
+    NumericVector ts2 = as<NumericVector>(ts_list[1]);  // Second series
+    int n = ts1.size();  // Get the size of the time series
+    NumericVector result(n);  // Initialize result vector
 
     // For addition
-    if (op == "add") {
-        NumericVector ts1 = as<NumericVector>(ts_list[0]);  // First series
-        NumericVector ts2 = as<NumericVector>(ts_list[1]);  // Second series
-
+    if (op == "add" || op == "+") {
         for (int j = 0; j < n; ++j) {
             // Apply alpha to the first series and (1 - alpha) to the second series
             result[j] = alpha * ts1[j] + (1 - alpha) * ts2[j];
         }
     }
-
     // For multiplication
-    if (op == "multiply") {
+    else if (op == "multiply" || op == "*") {
         for (int j = 0; j < n; ++j) {
-            result[j] = as<NumericVector>(ts_list[0])[j];  // Initialize result to first series
+            // Apply point-by-point multiplication
+            result[j] = ts1[j] * ts2[j];
         }
-        for (int i = 1; i < ts_list.size(); ++i) {
-            NumericVector ts = as<NumericVector>(ts_list[i]);
-            for (int j = 0; j < n; ++j) {
-                result[j] = alpha * result[j] * (1 - alpha) * ts[j];
-            }
-        }
+    }
+    // Handle unknown operations
+    else {
+        Rcpp::Rcout << "Unknown operation: " << op << std::endl;
+        stop("Unsupported operation.");
     }
 
     return List::create(Named("result") = result);
