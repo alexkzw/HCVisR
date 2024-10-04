@@ -38,15 +38,15 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
                                selected = selected_series())  # Set the selected series
         })
 
-        # Operator UI that appears when more than one series is selected
+        # Operator UI that only appears when exactly two series are selected
         output$operators_ui <- renderUI({
             req(input$selected_series)
-            if (length(input$selected_series) > 1) {
+            if (length(input$selected_series) == 2) {
                 tagList(
                     h4("Operators"),
                     radioButtons(session$ns("operator"), "Choose Operator:",
-                                 choices = c("NULL", "+", "*"), selected = "NULL"),
-                    sliderInput(session$ns("alpha"), "Alpha (for + and * operations)", min = 0, max = 1, value = 0.5)
+                                 choices = c("+", "*"), selected = "+"),
+                    sliderInput(session$ns("alpha"), "Alpha (for addition operations only)", min = 0, max = 1, value = 0.5)
                 )
             }
         })
@@ -74,23 +74,16 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
                 return(list(series = selected_ts_data[[1]]$series, model = selected_ts_data[[1]]$model))
             }
 
-            # Ensure the operator and alpha are valid
+            # Ensure the operator and alpha are valid if two series are selected
             req(input$operator)
             req(input$alpha)
 
-            # Use the combine method for the selected time series
-            combined_series <- NULL
-            if (input$operator == "+") {
-                combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = "add", alpha = input$alpha)
-            } else if (input$operator == "*") {
-                combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = "multiply", alpha = input$alpha)
-            }
+            # Use the combine.TimeSeries method to combine the two series
+            combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = input$operator, alpha = input$alpha)
 
             model_name <- paste(input$operator, "combination of", paste(input$selected_series, collapse = ", "))
             return(list(series = combined_series$series, model = model_name))
         })
-
-        return(selected_series_data)
     })
 }
 
