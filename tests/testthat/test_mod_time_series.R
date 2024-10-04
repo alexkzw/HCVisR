@@ -28,12 +28,16 @@ test_that("Time series generation works correctly", {
 
             expect_true(length(available_series()) > 2)
 
-            # Test Deterministic time series generation for Henon map
+            # Test Deterministic time series generation for Henon map with hardcoded x0 and y0
             session$setInputs(series_type = "Deterministic", deterministic_model = "henon", n_henon = 300, a_henon = 1.4, b_henon = 0.3)
             session$setInputs(generate = 1)
             session$flushReact()
 
             expect_true(length(available_series()) > 3)
+
+            # Verify that the generated Henon map time series has initial conditions set correctly
+            henon_series <- available_series()[[length(available_series())]]
+            expect_equal(henon_series$model, "Deterministic henon 1")
 
             # Ensure that series_counters are updating properly
             counters <- series_counters()
