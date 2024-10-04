@@ -60,10 +60,18 @@ new_stochastic_ts <- function(model = "WN", phi = NULL, theta = NULL, differenci
 
 
 # DeterministicTS constructor
-new_deterministic_ts <- function(model = "logistic", N = 1000, r = 4, a = 1.4, b = 0.3) {
+new_deterministic_ts <- function(model = "logistic", N = 1000, r = 4, a = 1.4,
+                                 b = 0.3, x0 = 0.1, y0 = 0.1) {
     series <- switch(model,
                      "logistic" = statcomp::logistic_map(N = N, r = r),
-                     "henon" = statcomp::henon_map(N = N, a = a, b = b)$x_ts,
+
+                     # Henon map uses the DChaos package
+                     "henon" = {
+                         henon_data <- as.data.frame(DChaos::henon.sim(n = N, a = a, b = b,
+                                                               x0 = x0, y0 = y0,))
+                         henon_data$x  # Return the 'x' component of the Henon map
+                     },
+
                      stop("Model type not recognised. Please choose from 'logistic' or 'henon'.")
     )
 
