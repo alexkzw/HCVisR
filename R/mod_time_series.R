@@ -53,7 +53,7 @@ mod_time_series_ui <- function(id) {
                 numericInput(ns("n_henon"), "Length of Time Series (N):", value = 300),
                 numericInput(ns("a_henon"), "Henon Map Parameter (a):", value = 1.4, min = 0, max = 2),
                 numericInput(ns("b_henon"), "Henon Map Parameter (b):", value = 0.3, min = 0, max = 1)
-            ),
+            )
         ),
         actionButton(ns("generate"), "Generate Time Series"),
         br(), br()  # Add spacing below the button
@@ -106,7 +106,9 @@ mod_time_series_server <- function(id, available_series, series_counters) {
                 if (model == "logistic") {
                     ts_obj <- new_deterministic_ts(model = model, N = input$n_logistic, r = input$r_logistic)
                 } else if (model == "henon") {
-                    ts_obj <- new_deterministic_ts(model = model, N = input$n_henon, a = input$a_henon, b = input$b_henon)
+                    # Hard-code x0 and y0 to 0.1 for Henon map to prevent Inf values
+                    ts_obj <- new_deterministic_ts(model = model, N = input$n_henon, a = input$a_henon, b = input$b_henon,
+                                                   x0 = 0.1, y0 = 0.1)
                 }
                 model_name <- paste("Deterministic", model, counters[[model]] + 1)
                 counters[[model]] <- counters[[model]] + 1
@@ -128,4 +130,3 @@ mod_time_series_server <- function(id, available_series, series_counters) {
         })
     })
 }
-
