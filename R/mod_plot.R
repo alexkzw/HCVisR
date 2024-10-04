@@ -31,7 +31,7 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
             req(ts_data)  # Ensure ts_data is not NULL
 
             # Wrap the data back into a TimeSeries object if it's not already one
-            ts_obj <- new_timeseries(series = ts_data$series, model = ts_data$model)
+            ts_obj <- if (inherits(ts_data, "TimeSeries")) ts_data else new_timeseries(series = ts_data$series, model = ts_data$model)
 
             # Now use the plot method for the TimeSeries object
             plot(ts_obj)
@@ -42,7 +42,12 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
             ts_data <- selected_series_data()
             req(ts_data)  # Ensure ts_data is not NULL
 
-            emb <- embedding_dimension()  # Get the selected embedding dimension
+            # Get the selected embedding dimension
+            emb <- embedding_dimension()
+            validate(
+                need(emb >= 3 && emb <= 6, "Embedding dimension must be between 3 and 6.")
+            )
+
             H_value <- HShannon(OPprob(ts_data$series, emb = emb))
             C_value <- StatComplexity(OPprob(ts_data$series, emb = emb))
 
