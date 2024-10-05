@@ -46,7 +46,11 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
                     h4("Operators"),
                     radioButtons(session$ns("operator"), "Choose Operator:",
                                  choices = c("+", "*"), selected = "+"),
-                    sliderInput(session$ns("alpha"), "Alpha (for addition operations only)", min = 0, max = 1, value = 0.5)
+                    # Conditionally render the alpha slider only when the "+" operator is selected
+                    conditionalPanel(
+                        condition = paste0("input['", session$ns("operator"), "'] == '+'"),
+                        sliderInput(session$ns("alpha"), "Alpha (for addition operations only)", min = 0, max = 1, value = 0.5)
+                    )
                 )
             }
         })
@@ -76,10 +80,14 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
 
             # Ensure the operator and alpha are valid if two series are selected
             req(input$operator)
-            req(input$alpha)
 
-            # Use the combine.TimeSeries method to combine the two series
-            combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = input$operator, alpha = input$alpha)
+            # Conditionally include alpha only for addition
+            if (input$operator == "+") {
+                req(input$alpha)
+                combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = input$operator, alpha = input$alpha)
+            } else {
+                combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = input$operator)
+            }
 
             model_name <- paste(input$operator, "combination of", paste(input$selected_series, collapse = ", "))
             return(list(series = combined_series$series, model = model_name))
