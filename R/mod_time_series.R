@@ -78,10 +78,10 @@ mod_time_series_server <- function(id, available_series, series_counters) {
                 return()
             }
 
-            # Automatically select the latest generated series
             selected_series <- reactiveVal(NULL)
             ts_obj <- NULL
             model_name <- NULL
+            series_length <- NULL
 
             # Create a copy of the series_counters to modify
             counters <- series_counters()
@@ -90,27 +90,32 @@ mod_time_series_server <- function(id, available_series, series_counters) {
                 model <- input$stochastic_model
                 if (model == "WN") {
                     ts_obj <- new_stochastic_ts(model = model, n = input$n_wn)
+                    series_length <- input$n_wn
                 } else if (model == "AR(1)") {
-                    # AR(1) Model
                     ts_obj <- new_stochastic_ts(model = "AR", phi = 0.5, n = input$n_ar)
+                    series_length <- input$n_ar
                 } else if (model == "ARMA(1,1)") {
-                    # ARMA(1,1) Model
                     ts_obj <- new_stochastic_ts(model = "ARMA", phi = 0.5, theta = 0.4, n = input$n_arma)
+                    series_length <- input$n_arma
                 } else if (model == "Colored Noise") {
                     ts_obj <- new_stochastic_ts(model = input$colored_noise_type, n = input$n_colored_noise)
+                    series_length <- input$n_colored_noise
                 }
-                model_name <- paste("Stochastic", model, counters[[model]] + 1)
+
+                model_name <- paste("Stochastic ", model, " (N=", series_length, ")", sep = "")
                 counters[[model]] <- counters[[model]] + 1
             } else if (input$series_type == "Deterministic") {
                 model <- input$deterministic_model
                 if (model == "logistic") {
                     ts_obj <- new_deterministic_ts(model = model, N = input$n_logistic, r = input$r_logistic)
+                    series_length <- input$n_logistic
                 } else if (model == "henon") {
-                    # Hard-code x0 and y0 to 0.1 for Henon map to prevent Inf values
                     ts_obj <- new_deterministic_ts(model = model, N = input$n_henon, a = input$a_henon, b = input$b_henon,
                                                    x0 = 0.1, y0 = 0.1)
+                    series_length <- input$n_henon
                 }
-                model_name <- paste("Deterministic", model, counters[[model]] + 1)
+
+                model_name <- paste("Deterministic ", model, " (N=", series_length, ")", sep = "")
                 counters[[model]] <- counters[[model]] + 1
             }
 
@@ -130,3 +135,4 @@ mod_time_series_server <- function(id, available_series, series_counters) {
         })
     })
 }
+
