@@ -23,19 +23,50 @@ mod_time_series_selection_ui <- function(id) {
 #' @param available_series Reactive list of available series
 #' @param selected_series Reactive value of selected series
 #' @import shiny
+#' @import shinyjs
 #' @export
 mod_time_series_selection_server <- function(id, available_series, selected_series) {
     moduleServer(id, function(input, output, session) {
+        # Use shinyjs to enable/disable elements
+        shinyjs::useShinyjs()
 
         # UI for selecting multiple time series
         output$series_selector <- renderUI({
             ts_list <- available_series()
             if (length(ts_list) == 0) return(NULL)
 
+            # Get all series model names
+            series_choices <- lapply(ts_list, function(ts) ts$model)
+
+            # Render the checkbox group for time series selection
             checkboxGroupInput(session$ns("selected_series"),
                                "Available Time Series:",
-                               choices = lapply(ts_list, function(ts) ts$model),
+                               choices = series_choices,
                                selected = selected_series())  # Set the selected series
+        })
+
+        # Observe the selection of time series and limit to two
+        observe({
+            selected <- input$selected_series
+            ts_list <- available_series()
+            series_choices <- lapply(ts_list, function(ts) ts$model)
+
+            # Disable further selections if two series are selected
+            if (length(selected) >= 2) {
+                # Disable all checkboxes except the two selected ones
+                shinyjs::runjs(sprintf("
+                    $('input:checkbox[name=\"%s\"]').each(function() {
+                        if (!$(this).is(':checked')) {
+                            $(this).attr('disabled', true);
+                        }
+                    });
+                ", session$ns("selected_series")))
+            } else {
+                # Re-enable all checkboxes if fewer than two series are selected
+                shinyjs::runjs(sprintf("
+                    $('input:checkbox[name=\"%s\"]').removeAttr('disabled');
+                ", session$ns("selected_series")))
+            }
         })
 
         # Operator UI that only appears when exactly two series are selected
@@ -94,4 +125,3 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
         })
     })
 }
-
