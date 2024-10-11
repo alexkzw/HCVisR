@@ -8,6 +8,7 @@
 #' @export
 app_ui <- function(request) {
     fluidPage(
+        shinyjs::useShinyjs(),  # enables shinyjs for the app
         # Set a max-width for the entire app to control resolution
         tags$head(
             tags$style(HTML("
