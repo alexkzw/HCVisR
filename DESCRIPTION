@@ -16,7 +16,8 @@ Imports:
   tuneR,
   stats,
   utils,
-  Rcpp
+  Rcpp,
+  shinyjs
 LinkingTo: Rcpp
 License: MIT + file LICENSE
 Encoding: UTF-8
