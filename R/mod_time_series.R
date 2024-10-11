@@ -44,15 +44,12 @@ mod_time_series_ui <- function(id) {
 
             conditionalPanel(
                 condition = paste0("input['", ns("deterministic_model"), "'] == 'logistic'"),
-                numericInput(ns("n_logistic"), "Length of Time Series (N):", value = 300, min = 100, max = 1000, step = 100),
-                numericInput(ns("r_logistic"), "Logistic Map Parameter (r):", value = 4, min = 0, max = 4, step = 0.1)  # Added this for r
+                numericInput(ns("n_logistic"), "Length of Time Series (N):", value = 300, min = 100, max = 1000, step = 100)
             ),
 
             conditionalPanel(
                 condition = paste0("input['", ns("deterministic_model"), "'] == 'henon'"),
-                numericInput(ns("n_henon"), "Length of Time Series (N):", value = 300, min = 100, max = 1000, step = 100),
-                numericInput(ns("a_henon"), "Henon Map Parameter (a):", value = 1.4, min = 0, max = 2),
-                numericInput(ns("b_henon"), "Henon Map Parameter (b):", value = 0.3, min = 0, max = 1)
+                numericInput(ns("n_henon"), "Length of Time Series (N):", value = 300, min = 100, max = 1000, step = 100)
             )
         ),
         actionButton(ns("generate"), "Generate Time Series"),
@@ -107,10 +104,10 @@ mod_time_series_server <- function(id, available_series, series_counters) {
             } else if (input$series_type == "Deterministic") {
                 model <- input$deterministic_model
                 if (model == "logistic") {
-                    ts_obj <- new_deterministic_ts(model = model, N = input$n_logistic, r = input$r_logistic)
+                    ts_obj <- new_deterministic_ts(model = model, N = input$n_logistic, r = 4)
                     series_length <- input$n_logistic
                 } else if (model == "henon") {
-                    ts_obj <- new_deterministic_ts(model = model, N = input$n_henon, a = input$a_henon, b = input$b_henon,
+                    ts_obj <- new_deterministic_ts(model = model, N = input$n_henon, a = 1.4, b = 0.3,
                                                    x0 = 0.1, y0 = 0.1)
                     series_length <- input$n_henon
                 }
