@@ -27,10 +27,9 @@ mod_time_series_selection_ui <- function(id) {
 #' @export
 mod_time_series_selection_server <- function(id, available_series, selected_series) {
     moduleServer(id, function(input, output, session) {
-        # Use shinyjs to enable/disable elements
         shinyjs::useShinyjs()
 
-        # UI for selecting multiple time series
+        # UI for selecting multiple time series (up to five)
         output$series_selector <- renderUI({
             ts_list <- available_series()
             if (length(ts_list) == 0) return(NULL)
@@ -45,39 +44,32 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
                                selected = selected_series())  # Set the selected series
         })
 
-        # Observe the selection of time series and limit to two
+        # Observe the selection of time series and control operator visibility
         observe({
             selected <- input$selected_series
-            ts_list <- available_series()
-            series_choices <- lapply(ts_list, function(ts) ts$model)
 
-            # Disable further selections if two series are selected
-            if (length(selected) >= 2) {
-                # Disable all checkboxes except the two selected ones
-                shinyjs::runjs(sprintf("
-                    $('input:checkbox[name=\"%s\"]').each(function() {
-                        if (!$(this).is(':checked')) {
-                            $(this).attr('disabled', true);
-                        }
-                    });
-                ", session$ns("selected_series")))
+            # Disable the operator if more than two series are selected
+            if (length(selected) > 2) {
+                shinyjs::disable("operator")
+                updateRadioButtons(session, "operator", selected = "NULL")  # Revert to NULL
+            } else if (length(selected) == 2) {
+                shinyjs::enable("operator")
             } else {
-                # Re-enable all checkboxes if fewer than two series are selected
-                shinyjs::runjs(sprintf("
-                    $('input:checkbox[name=\"%s\"]').removeAttr('disabled');
-                ", session$ns("selected_series")))
+                shinyjs::disable("operator")
+                updateRadioButtons(session, "operator", selected = "NULL")  # Revert to NULL
             }
         })
 
-        # Operator UI that only appears when exactly two series are selected
+        # Operator UI: Show only if exactly 2 series are selected
         output$operators_ui <- renderUI({
             req(input$selected_series)
+
             if (length(input$selected_series) == 2) {
                 tagList(
                     h4("Operators"),
                     radioButtons(session$ns("operator"), "Choose Operator:",
-                                 choices = c("+", "*"), selected = "+"),
-                    # Conditionally render the alpha slider only when the "+" operator is selected
+                                 choices = c("NULL", "+", "*"), selected = "NULL",
+                                 inline = TRUE),
                     conditionalPanel(
                         condition = paste0("input['", session$ns("operator"), "'] == '+'"),
                         sliderInput(session$ns("alpha"), "Alpha (for addition operations only)", min = 0, max = 1, value = 0.5)
@@ -86,42 +78,44 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
             }
         })
 
-        # Reactive function to apply the operation if needed
+        # Reactive function to accumulate the selections and apply the operation if needed
         selected_series_data <- reactive({
-            # Ensure that selected series exist and are not NULL
             req(input$selected_series)
-
             selected_series <- input$selected_series
-            if (!isTruthy(selected_series)) return(NULL)
-
             ts_list <- available_series()
             selected_ts_data <- ts_list[sapply(ts_list, function(ts) ts$model) %in% selected_series]
 
-            # Make sure that we have valid data before proceeding
-            req(selected_ts_data)
-            if (!isTruthy(selected_ts_data)) return(NULL)
+            # Accumulate selected series in a list
+            selected_ts_data_accum <- list()
+            for (i in seq_along(selected_ts_data)) {
+                selected_ts_data_accum[[i]] <- list(series = selected_ts_data[[i]]$series,
+                                                    model = selected_ts_data[[i]]$model)
+            }
 
-            # Check if there's only one series selected or if 'NULL' operator is selected
-            if (length(selected_ts_data) == 1 || !isTruthy(input$operator) || input$operator == "NULL") {
-                if (!isTruthy(selected_ts_data[[1]]$series) || !isTruthy(selected_ts_data[[1]]$model)) {
-                    return(NULL)  # Return NULL if there is no valid series data
+            # If exactly 2 series are selected and an operator is chosen, combine them
+            if (length(selected_ts_data_accum) == 2 && input$operator != "NULL") {
+                req(input$operator)
+
+                if (input$operator == "+") {
+                    req(input$alpha)
+                    combined_series_values <- selected_ts_data_accum[[1]]$series * (1 - input$alpha) +
+                        selected_ts_data_accum[[2]]$series * input$alpha
+                } else if (input$operator == "*") {
+                    combined_series_values <- selected_ts_data_accum[[1]]$series * selected_ts_data_accum[[2]]$series
                 }
-                return(list(series = selected_ts_data[[1]]$series, model = selected_ts_data[[1]]$model))
+
+                combined_series <- list(
+                    series = combined_series_values,
+                    model = paste(selected_ts_data_accum[[1]]$model, input$operator, selected_ts_data_accum[[2]]$model)
+                )
+
+                return(list(combined_series))  # Return the combined series in a list
             }
 
-            # Ensure the operator and alpha are valid if two series are selected
-            req(input$operator)
-
-            # Conditionally include alpha only for addition
-            if (input$operator == "+") {
-                req(input$alpha)
-                combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = input$operator, alpha = input$alpha)
-            } else {
-                combined_series <- combine.TimeSeries(selected_ts_data[[1]], selected_ts_data[[2]], method = input$operator)
-            }
-
-            model_name <- paste(input$operator, "combination of", paste(input$selected_series, collapse = ", "))
-            return(list(series = combined_series$series, model = model_name))
+            # Otherwise, return the individually selected series
+            return(selected_ts_data_accum)
         })
+
+        return(selected_series_data)
     })
 }
