@@ -17,7 +17,8 @@ Imports:
   stats,
   utils,
   Rcpp,
-  shinyjs
+  shinyjs,
+  plotly
 LinkingTo: Rcpp
 License: MIT + file LICENSE
 Encoding: UTF-8
