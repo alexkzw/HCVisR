@@ -33,8 +33,8 @@ test_that("Time series selection works correctly", {
 
             # Check that the combined series has data and is properly labeled
             combined <- selected_series_data()
-            expect_true(length(combined$series) > 0)
-            expect_equal(combined$model, "+ combination of AR, WN")
+            expect_true(length(combined[[1]]$series) > 0)  # Update to match structure
+            expect_equal(combined[[1]]$model, "AR + WN")  # Update to match structure
         }
     )
 })
@@ -52,21 +52,21 @@ test_that("Rcpp operations work correctly for time series addition and multiplic
         {
             # Simulate selecting two series and applying addition operator
             session$setInputs(selected_series = c("AR", "WN"))
-            session$setInputs(operator = "add")
+            session$setInputs(operator = "+")
             session$setInputs(alpha = 0.5)
             session$flushReact()
 
             combined <- selected_series_data()
-            expect_true(length(combined$series) == 100)
-            expect_equal(combined$model, "add combination of AR, WN")
+            expect_true(length(combined[[1]]$series) == 100)  # Update to match structure
+            expect_equal(combined[[1]]$model, "AR + WN")  # Update to match structure
 
             # Simulate applying multiplication operator
-            session$setInputs(operator = "multiply")
+            session$setInputs(operator = "*")
             session$flushReact()
 
             combined <- selected_series_data()
-            expect_true(length(combined$series) == 100)
-            expect_equal(combined$model, "multiply combination of AR, WN")
+            expect_true(length(combined[[1]]$series) == 100)  # Update to match structure
+            expect_equal(combined[[1]]$model, "AR * WN")  # Update to match structure
         }
     )
 })
