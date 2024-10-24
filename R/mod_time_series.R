@@ -99,7 +99,7 @@ mod_time_series_server <- function(id, available_series, series_counters) {
                     series_length <- input$n_colored_noise
                 }
 
-                model_name <- paste("Stochastic ", model, " (N=", series_length, ")", sep = "")
+                model_name <- paste(model, "(N=", series_length, ")", sep = "")
                 counters[[model]] <- counters[[model]] + 1
             } else if (input$series_type == "Deterministic") {
                 model <- input$deterministic_model
@@ -112,7 +112,7 @@ mod_time_series_server <- function(id, available_series, series_counters) {
                     series_length <- input$n_henon
                 }
 
-                model_name <- paste("Deterministic ", model, " (N=", series_length, ")", sep = "")
+                model_name <- paste(model, "(N=", series_length, ")", sep = "")
                 counters[[model]] <- counters[[model]] + 1
             }
 
