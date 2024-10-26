@@ -42,9 +42,9 @@ new_stochastic_ts <- function(model = "WN", phi = NULL, theta = NULL, differenci
 
     # Generate time series based on the selected model
     series <- switch(model,
-                     "WN" = arima.sim(model = list(order = c(0, 0, 0)), n = n),
-                     "AR" = arima.sim(model = list(ar = phi, order = c(1, 0, 0)), n = n),  # AR(1) with phi = 0.5
-                     "ARMA" = arima.sim(model = list(ar = phi, ma = theta, order = c(1, 0, 1)), n = n),  # ARMA(1,1)
+                     "WN" = as.numeric(arima.sim(model = list(order = c(0, 0, 0)), n = n)),  # Convert to numeric
+                     "AR" = as.numeric(arima.sim(model = list(ar = phi, order = c(1, 0, 0)), n = n)),  # Convert to numeric
+                     "ARMA" = as.numeric(arima.sim(model = list(ar = phi, ma = theta, order = c(1, 0, 1)), n = n)),  # Convert to numeric
 
                      # Add handling for colored noise
                      "white" = as.numeric(noise(kind = "white", duration = n, pcm = TRUE)@left),  # White noise
@@ -58,18 +58,17 @@ new_stochastic_ts <- function(model = "WN", phi = NULL, theta = NULL, differenci
     new_timeseries(series, model, class = "StochasticTS")
 }
 
-
 # DeterministicTS constructor
 new_deterministic_ts <- function(model = "logistic", N = 1000, r = 4, a = 1.4,
                                  b = 0.3, x0 = 0.1, y0 = 0.1) {
     series <- switch(model,
-                     "logistic" = statcomp::logistic_map(N = N, r = r),
+                     "logistic" = as.numeric(statcomp::logistic_map(N = N, r = r)),  # Convert to numeric
 
                      # Henon map uses the DChaos package
                      "henon" = {
                          henon_data <- as.data.frame(DChaos::henon.sim(n = N, a = a, b = b,
-                                                               x0 = x0, y0 = y0,))
-                         henon_data$x  # Return the 'x' component of the Henon map
+                                                                       x0 = x0, y0 = y0))
+                         as.numeric(henon_data$x)  # Convert the 'x' component of the Henon map to numeric
                      },
 
                      stop("Model type not recognised. Please choose from 'logistic' or 'henon'.")
