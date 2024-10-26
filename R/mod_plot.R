@@ -77,23 +77,49 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
             linf_data_lower <- subset(StatOrdPattHxC::LinfLsup, Side == "Lower" & Dimension == emb)
             linf_data_upper <- subset(StatOrdPattHxC::LinfLsup, Side == "Upper" & Dimension == emb)
 
-            # Build the plot using plot_ly
-            plot_ly() %>%
+            # Define a manual color palette
+            unique_models <- unique(hc_data$model)
+            color_palette <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f")
+            num_models <- length(unique_models)
+            assigned_colors <- setNames(color_palette[1:num_models], unique_models)
+
+            # Initialize plot_ly and add boundaries
+            plot <- plot_ly() %>%
                 add_lines(data = linf_data_lower, x = ~H, y = ~C, line = list(color = 'red'), hoverinfo = 'skip', showlegend = FALSE) %>%
-                add_lines(data = linf_data_upper, x = ~H, y = ~C, line = list(color = 'red'), hoverinfo = 'skip', showlegend = FALSE) %>%
-                add_markers(data = hc_data, x = ~H, y = ~C, color = ~model, colors = "Set2", size = 3,
-                            hovertemplate = paste(
-                                'H: %{x:.3f}<br>',
-                                'C: %{y:.3f}<br>',
-                                '<extra></extra>'  # Removed the %{text}
-                            )) %>%
-                layout(
-                    title = paste("H x C Plane Visualisation (Embedding Dimension:", emb, ")"),
-                    xaxis = list(title = "H"),
-                    yaxis = list(title = "C"),
-                    showlegend = TRUE
-                )
+                add_lines(data = linf_data_upper, x = ~H, y = ~C, line = list(color = 'red'), hoverinfo = 'skip', showlegend = FALSE)
+
+            # Add each time series individually with a specified color and legend label
+            for (model_name in unique(hc_data$model)) {
+                model_data <- hc_data[hc_data$model == model_name, ]
+                plot <- plot %>%
+                    add_markers(
+                        data = model_data,
+                        x = ~H,
+                        y = ~C,
+                        marker = list(color = assigned_colors[model_name]),  # Manually assign color
+                        name = model_name,  # Set the legend name
+                        size = 3,
+                        hovertemplate = paste(
+                            model_name, '<br>',  # Display model name on hover
+                            'H: %{x:.3f}<br>',
+                            'C: %{y:.3f}<br>',
+                            '<extra></extra>'
+                        ),
+                        text = ~model_name,  # Include model name for hover
+                        showlegend = TRUE  # Ensure legend appears even for one trace
+                    )
+            }
+
+            # Force legend display even if only one series is present
+            plot <- plot %>% layout(
+                title = paste("H x C Plane Visualisation (Embedding Dimension:", emb, ")"),
+                xaxis = list(title = "H"),
+                yaxis = list(title = "C"),
+                showlegend = TRUE,  # Force legend display at the layout level
+                legend = list(itemsizing = "constant")  # Control legend sizing for consistency
+            )
+
+            plot
         })
     })
 }
-
