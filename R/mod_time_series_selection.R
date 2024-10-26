@@ -62,7 +62,7 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
 
         # Operator UI: Show only if exactly 2 series are selected
         output$operators_ui <- renderUI({
-            req(input$selected_series)
+            req(isTruthy(input$selected_series))
 
             if (length(input$selected_series) == 2) {
                 tagList(
@@ -80,40 +80,47 @@ mod_time_series_selection_server <- function(id, available_series, selected_seri
 
         # Reactive function to accumulate the selections and apply the operation if needed
         selected_series_data <- reactive({
-            req(input$selected_series)
+            req(isTruthy(input$selected_series))  # Ensure selected series exist and are valid
             selected_series <- input$selected_series
+            if (is.null(selected_series) || length(selected_series) < 1) return(NULL)
+
             ts_list <- available_series()
             selected_ts_data <- ts_list[sapply(ts_list, function(ts) ts$model) %in% selected_series]
 
-            # Accumulate selected series in a list
-            selected_ts_data_accum <- list()
-            for (i in seq_along(selected_ts_data)) {
-                selected_ts_data_accum[[i]] <- list(series = selected_ts_data[[i]]$series,
-                                                    model = selected_ts_data[[i]]$model)
+            # Ensure we have valid data before proceeding
+            req(isTruthy(selected_ts_data))
+            if (length(selected_ts_data) == 0) return(NULL)
+
+            # Check if there's only one series selected or if 'NULL' operator is selected
+            if (length(selected_ts_data) == 1 || input$operator == "NULL" || !isTruthy(input$operator)) {
+                # Return each individual selected series separately when no operator is applied
+                return(selected_ts_data)
             }
 
             # If exactly 2 series are selected and an operator is chosen, combine them
-            if (length(selected_ts_data_accum) == 2 && input$operator != "NULL") {
+            if (length(selected_ts_data) == 2 && isTruthy(input$operator) && input$operator != "NULL") {
                 req(input$operator)
 
+                # Perform the combination based on the selected operator
                 if (input$operator == "+") {
-                    req(input$alpha)
-                    combined_series_values <- selected_ts_data_accum[[1]]$series * (1 - input$alpha) +
-                        selected_ts_data_accum[[2]]$series * input$alpha
+                    req(isTruthy(input$alpha))
+                    combined_series_values <- selected_ts_data[[1]]$series * (1 - input$alpha) +
+                        selected_ts_data[[2]]$series * input$alpha
                 } else if (input$operator == "*") {
-                    combined_series_values <- selected_ts_data_accum[[1]]$series * selected_ts_data_accum[[2]]$series
+                    combined_series_values <- selected_ts_data[[1]]$series * selected_ts_data[[2]]$series
                 }
 
+                # Create the combined series and return as a list with only one entry
                 combined_series <- list(
                     series = combined_series_values,
-                    model = paste(selected_ts_data_accum[[1]]$model, input$operator, selected_ts_data_accum[[2]]$model)
+                    model = paste(selected_ts_data[[1]]$model, input$operator, selected_ts_data[[2]]$model)
                 )
 
                 return(list(combined_series))  # Return the combined series in a list
             }
 
-            # Otherwise, return the individually selected series
-            return(selected_ts_data_accum)
+            # Return the individually selected series data if no combination is applied
+            return(selected_ts_data)
         })
 
         return(selected_series_data)
