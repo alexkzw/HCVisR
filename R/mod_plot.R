@@ -30,7 +30,7 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
         series_data_list <- reactive({
             series_data <- selected_series_data()
             if (is.null(series_data)) return(NULL)
-            return(series_data)  # No need to wrap single series now since it will return a list
+            return(series_data)
         })
 
         # Time series plot
@@ -45,7 +45,7 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
             for (i in seq_along(series_list)) {
                 ts_data <- series_list[[i]]
                 p <- p + geom_line(aes(x = seq_along(ts_data$series), y = ts_data$series),
-                                   color = "blue", linewidth = 1) +  # Use 'linewidth' for lines
+                                   color = "blue", linewidth = 1) +
                     labs(title = paste("Time Series Plot:", ts_data$model), x = "Time", y = "Value")
             }
 
