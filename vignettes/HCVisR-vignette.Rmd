@@ -9,24 +9,24 @@ vignette: >
 
 # Overview
 
-`HCVisR` is a Shiny-based R package for generating time series and visualising them on the H x C (Entropy and Complexity) plane. This package allows users to generate both stochastic and deterministic time series and perform basic operations like addition and multiplication on selected time series.
+The `HCVisR` package provides an interactive Shiny app for generating and visualizing time series data in the H × C plane. The app supports stochastic and deterministic time series generation, allows "mixing" two time series with addition or multiplication, and visualizes points in the H × C plane using Shannon Entropy (H) and Statistical Complexity (C), relying on the StatOrdPattHxC package for ordinal pattern analysis.
 
 # Installation
 
 You can install the development version from GitHub:
 
-```{r, eval = FALSE}
-# install.packages("remotes") # Uncomment if 'remotes' is not installed
+```{r}
+#install.packages("remotes") 
 #remotes::install_github("alexkzw/HCVisR")
+library(HCVisR)
 ```
 
 # Basic Usage
 
 To start the Shiny app, use the following command:
 
-```{r, warning=F, message=F}
-library(HCVisR)
-#HCVisR::launchApp()
+```{r, warning=F, message=F, eval=F}
+HCVisR::launchApp()
 ```
 
 The app provides options for generating and uploading time series. Users can visualise the time series and see its position on the H x C plane based on the selected embedding dimension.
@@ -36,7 +36,7 @@ The app provides options for generating and uploading time series. Users can vis
 Here’s an example of how to generate a stochastic AR(1) time series and visualise it:
 ```{r fig.width=7, warning=F, message=F}
 # Generate AR(1) Time Series
-ts_ar <- new_stochastic_ts("AR", n = 200, phi = 0.5)
+ts_ar <- new_stochastic_ts("AR", n = 300, phi = 0.5)
 
 # Print the time series
 print(ts_ar)
@@ -48,26 +48,26 @@ plot(ts_ar)
 summary(ts_ar)
 ```
 
-User can generate another stochastic time series and explore it with the same object-oriented methods:
+User can also generate a deterministic time series and explore it with the same object-oriented methods:
 ```{r fig.width=7, warning=F, message=F}
-# Generate White Noise Time Series
-ts_wn <- new_stochastic_ts("WN", n = 200)
+# Generate logistic time series
+ts_logistic <- new_deterministic_ts(model = "logistic", N = 300)
 
 # Print the time series
-print(ts_wn)
+print(ts_logistic)
 
 # Visualise the time series
-plot(ts_wn)
+plot(ts_logistic)
 
 # Get a summary of the series
-summary(ts_wn)
+summary(ts_logistic)
 ```
 
-Users can then combine two time series via addition or multiplication. Below is an example of combining the previously generated AR(1) and the white noise time series:
+Users can then combine two time series via addition or multiplication. Below is an example of combining the previously generated AR(1) and the logistic time series:
 
 ```{r fig.width=7, warning=F, message=F}
 # Combine AR(1) and White Noise time series using addition
-combined_add <- combine.TimeSeries(ts_ar, ts_wn, method = "add", alpha = 0.5)
+combined_add <- combine.TimeSeries(ts_ar, ts_logistic, method = "add", alpha = 0.5)
 
 # Print the combined series
 print(combined_add)
@@ -82,7 +82,7 @@ summary(combined_add)
 You can also combine them using multiplication:
 ```{r fig.width=7, warning=F, message=F}
 # Combine AR(1) and White Noise time series using multiplication
-combined_multiply <- combine.TimeSeries(ts_ar, ts_wn, method = "multiply", alpha = 0.5)
+combined_multiply <- combine.TimeSeries(ts_ar, ts_logistic, method = "multiply")
 
 # Print the combined series
 print(combined_multiply)
@@ -93,4 +93,3 @@ plot(combined_multiply)
 # Get a summary of the combined series
 summary(combined_multiply)
 ```
-
