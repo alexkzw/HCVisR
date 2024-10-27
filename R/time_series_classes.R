@@ -58,21 +58,29 @@ new_stochastic_ts <- function(model = "WN", phi = NULL, theta = NULL, differenci
     new_timeseries(series, model, class = "StochasticTS")
 }
 
-# DeterministicTS constructor
+#' DeterministicTS constructor
+#'
+#' Creates a deterministic time series object based on the specified model and parameters.
+#'
+#' @param model Character string specifying the deterministic model (e.g., "logistic", "henon").
+#' @param N Integer for the number of points.
+#' @param r Parameter for the logistic map.
+#' @param a Parameter 'a' for the Henon map.
+#' @param b Parameter 'b' for the Henon map.
+#' @param x0 Initial x value for the Henon map.
+#' @param y0 Initial y value for the Henon map.
+#' @return A deterministic time series object.
+#' @export
 new_deterministic_ts <- function(model = "logistic", N = 1000, r = 4, a = 1.4,
                                  b = 0.3, x0 = 0.1, y0 = 0.1) {
     series <- switch(model,
-                     "logistic" = as.numeric(statcomp::logistic_map(N = N, r = r)),  # Convert to numeric
-
-                     # Henon map uses the DChaos package
+                     "logistic" = as.numeric(statcomp::logistic_map(N = N, r = r)),
                      "henon" = {
-                         henon_data <- as.data.frame(DChaos::henon.sim(n = N, a = a, b = b,
-                                                                       x0 = x0, y0 = y0))
-                         as.numeric(henon_data$x)  # Convert the 'x' component of the Henon map to numeric
+                         henon_data <- as.data.frame(DChaos::henon.sim(n = N, a = a, b = b, x0 = x0, y0 = y0))
+                         as.numeric(henon_data$x)
                      },
-
                      stop("Model type not recognised. Please choose from 'logistic' or 'henon'.")
     )
-
     new_timeseries(series, model, class = "DeterministicTS")
 }
+
