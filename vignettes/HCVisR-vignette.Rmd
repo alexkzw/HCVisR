@@ -11,6 +11,10 @@ vignette: >
 
 The `HCVisR` package provides an interactive Shiny app for generating and visualizing time series data in the H × C plane. The app supports stochastic and deterministic time series generation, allows "mixing" two time series with addition or multiplication, and visualizes points in the H × C plane using Shannon Entropy (H) and Statistical Complexity (C), relying on the StatOrdPattHxC package for ordinal pattern analysis.
 
+# Introduction to the H x C Plane
+
+The H × C plane, representing Shannon Entropy (H) and Statistical Complexity (C), provides a way to understand the structure and predictability of time series. **Shannon Entropy (H)** measures the randomness in the series, while **Statistical Complexity (C)** assesses the complexity or structural richness. Together, they allow for an insightful visualization of different types of time series.
+
 # Installation
 
 You can install the development version from GitHub:
@@ -31,7 +35,19 @@ HCVisR::launchApp()
 
 The app provides options for generating and uploading time series. Users can visualise the time series and see its position on the H x C plane based on the selected embedding dimension.
 
-# Example
+# Using the Shiny App Interface
+
+The app interface contains several main sections:
+
+- **Time Series Generation**: Generate stochastic or deterministic time series by specifying parameters.
+
+- **File Upload**: Upload your time series in CSV format (one column, numeric values only, and maximum of 1000 data points).
+
+- **Embedding Dimension Selection**: Choose an embedding dimension (3 to 6) for H and C calculations.
+
+- **Plot Visualizations**: View the time series plot and its corresponding H x C point based on selected parameters.
+
+# Example Workflow
 
 Here’s an example of how to generate a stochastic AR(1) time series and visualise it:
 ```{r fig.width=7, warning=F, message=F}
@@ -93,3 +109,23 @@ plot(combined_multiply)
 # Get a summary of the combined series
 summary(combined_multiply)
 ```
+
+# Exploring Embedding Dimensions
+
+The embedding dimension affects the calculation of H and C. Users can select an embedding dimension (3 to 6) in the app to explore different structural views. Higher dimensions provide a richer view of complexity, though with increased computation.
+
+# Viewing the H x C plot
+
+To view the H × C visualization:
+
+1. Select a time series or upload your data.
+2. Choose the desired embedding dimension (3-6).
+3. The plot will display the computed entropy-complexity point in the H x C plane.
+
+This tool is valuable for examining how different types of time series—stochastic or deterministic—position themselves within the entropy-complexity landscape.
+
+# Additional Resources and References
+
+- For more on entropy and complexity calculations, refer to the [StatOrdPattHxC](https://github.com/arey1911/StatOrdPattHxC) package.
+
+- Read more about the application of the H × C plane in the context of time series in the [Bandt and Pompe (2002)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.88.174102) paper.
