@@ -3,7 +3,7 @@
 #' Constructs UI elements for plotting time series data.
 #'
 #' @param id A namespace identifier for the plot elements
-#' @import shiny
+#' @import shiny plotly
 #' @export
 mod_plot_ui <- function(id) {
     ns <- NS(id)
