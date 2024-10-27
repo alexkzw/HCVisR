@@ -1,0 +1,65 @@
+---
+title: "Test Plan for HCVisR Package"
+output: rmarkdown::pdf_document
+---
+
+# Overview
+
+The HCVisR package provides an interactive Shiny app for generating and visualizing time series data in the H × C plane. The app supports stochastic and deterministic time series generation, allows "mixing" two time series with addition or multiplication, and visualizes points in the H × C plane using Shannon Entropy (H) and Statistical Complexity (C), relying on the StatOrdPattHxC package for ordinal pattern analysis.
+
+This test plan covers installation, functionality, input validation, error handling, and performance testing to ensure robustness, usability, and accuracy.
+
+# Installation
+
+The steps to download the package and install it are the following:
+```{r eval=FALSE}
+install.packages('remotes')
+library(remotes)
+remotes::install_github("alexkzw/HCVisR")
+```
+
+```{r}
+library(HCVisR)
+```
+
+# Usage
+
+## Time Series Generation
+
+Confirm that the app correctly generates time series data for different models
+```{r}
+ts_wn <- new_stochastic_ts("WN", n = 300)
+ts_ar <- new_stochastic_ts("AR", n = 300, phi = 0.5)
+ts_arma <- new_stochastic_ts("ARMA", n = 300, phi = 0.5, theta = 0.4)
+ts_logistic <- new_deterministic_ts("logistic", N = 300)
+ts_deterministic <- new_deterministic_ts("henon", N = 300)
+```
+
+Check that the time series data generated for each model matches the specified parameters.
+
+## Mixing Time Series
+
+Validate the correct combination of two time series using addition and multiplication.
+
+```{r}
+combined_add <- combine.TimeSeries(ts_ar, ts_logistic, method = "add", alpha = 0.5)
+combined_multiply <- combine.TimeSeries(ts_ar, ts_wn, method = "multiply")
+
+plot(combined_multiply)
+```
+Check that the combined time series is correctly generated with the appropriate naming conventions, and the length matches the original series.
+
+
+## File Upload Validation
+
+Verify correct handling of uploaded files and appropriate error responses for invalid files.
+
+### Tests:
+
+- Upload a CSV file with non-numeric values and check that no series is added.
+- Upload a CSV with multiple columns and check that no series is added.
+- Upload a valid CSV file to confirm successful processing.
+
+### Expected Results:
+- Non-numeric and multi-column files produce error messages, and no series is added.
+- Valid files are processed correctly, and the resulting time series matches the uploaded data.
