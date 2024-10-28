@@ -39,6 +39,10 @@ You can install the development version of `HCVisR` from [GitHub](https://github
 devtools::install_github("alexkzw/HCVisR")
 ```
 
+## Vignette
+
+A vignette is available here: https://github.com/alexkzw/HCVisR/blob/master/vignettes/HCVisR-vignette.pdf
+
 ## Reference
 
 1. C. Bandt and B. Pompe. Permutation entropy: A natural complexity measure for time series. Physical Review Letters, 88:174102–1–174102–4, 2002. doi: 10.1103/PhysRevLett.88.174102.

@@ -50,6 +50,11 @@ You can install the development version of `HCVisR` from
 devtools::install_github("alexkzw/HCVisR")
 ```
 
+## Vignette
+
+A vignette is available here:
+<https://github.com/alexkzw/HCVisR/blob/master/vignettes/HCVisR-vignette.pdf>
+
 ## Reference
 
 1.  C. Bandt and B. Pompe. Permutation entropy: A natural complexity
