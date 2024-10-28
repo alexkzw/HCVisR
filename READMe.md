@@ -50,6 +50,15 @@ You can install the development version of `HCVisR` from
 devtools::install_github("alexkzw/HCVisR")
 ```
 
+## Launching the R Shiny app
+
+The R Shiny app can be launched with:
+
+``` r
+library(HCVisR)
+HCVisR::launchApp()
+```
+
 ## Vignette
 
 A vignette is available here:
