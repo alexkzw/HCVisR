@@ -1,6 +1,6 @@
 ---
 title: "HCVisR: Time Series Generation and H x C Visualisation"
-output: rmarkdown::html_vignette
+output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{HCVisR: Time Series Generation and H x C Visualisation}
   %\VignetteEngine{knitr::rmarkdown}
@@ -19,7 +19,7 @@ The H × C plane, representing Shannon Entropy (H) and Statistical Complexity (C
 
 You can install the development version from GitHub:
 
-```{r}
+```{r, warning=F, message=F}
 #install.packages("remotes") 
 #remotes::install_github("alexkzw/HCVisR")
 library(HCVisR)
@@ -41,7 +41,7 @@ The app interface contains several main sections:
 
 - **Time Series Generation**: Generate stochastic or deterministic time series by specifying parameters.
 
-- **File Upload**: Upload your time series in CSV format (one column, numeric values only, and maximum of 1000 data points).
+- **File Upload**: Upload your time series in CSV format (one column, numeric values only, and maximum of 1000 data points). There is an example data set `example_timeseries.csv` stored in the folder `inst/extdata`.
 
 - **Embedding Dimension Selection**: Choose an embedding dimension (3 to 6) for H and C calculations.
 
