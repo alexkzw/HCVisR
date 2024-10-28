@@ -21,8 +21,7 @@ onto the H × C plane.
 - **Time Series Generation**: `HCVisR` supports the generation of
   multiple types of time series, including stochastic (e.g., White
   Noise, AR, ARMA) and deterministic (e.g., Logistic Map, Henon Map)
-  models. Users can configure parameters for each model to customize the
-  generated data.
+  models.
 
 - **H × C Plane Visualization**: The app calculates normalized Shannon
   entropy (H) and statistical complexity (C) for each time series using
