@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 
 ## Key Features
 
-- **Time Series Generation**: `HCVisR` supports the generation of multiple types of time series, including stochastic (e.g., White Noise, AR, ARMA) and deterministic (e.g., Logistic Map, Henon Map) models. Users can configure parameters for each model to customize the generated data.
+- **Time Series Generation**: `HCVisR` supports the generation of multiple types of time series, including stochastic (e.g., White Noise, AR, ARMA) and deterministic (e.g., Logistic Map, Henon Map) models.
 
 - **H × C Plane Visualization**: The app calculates normalized Shannon entropy (H) and statistical complexity (C) for each time series using ordinal patterns. This calculation relies on the [StatOrdPattHxC](https://github.com/arey1911/StatOrdPattHxC) package, which provides the necessary functions for ordinal pattern analysis and entropy-complexity mapping. Each time series is visualized as a data point on the H × C plane, enabling users to identify patterns and gain insights into the behavior of different time series types.
 
