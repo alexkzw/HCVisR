@@ -19,6 +19,8 @@ Imports:
   Rcpp,
   shinyjs,
   plotly
+Remotes:
+  arey1911/StatOrdPattHxC
 LinkingTo: Rcpp
 License: MIT + file LICENSE
 Encoding: UTF-8
