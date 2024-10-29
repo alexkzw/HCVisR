@@ -22,9 +22,7 @@ Imports:
   cachem (>= 1.0.6),
   fastmap (>= 1.2.0),
   knitr (>= 1.31),
-  xfun (>= 0.44),
-  importFrom(plotly, last_plot),
-  importFrom(shinyjs, runExample)
+  xfun (>= 0.44)
 Remotes:
   arey1911/StatOrdPattHxC
 LinkingTo: Rcpp
