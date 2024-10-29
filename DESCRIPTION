@@ -18,11 +18,7 @@ Imports:
   utils,
   Rcpp,
   shinyjs,
-  plotly,
-  cachem (>= 1.0.6),
-  fastmap (>= 1.2.0),
-  knitr (>= 1.31),
-  xfun (>= 0.44)
+  plotly
 Remotes:
   arey1911/StatOrdPattHxC
 LinkingTo: Rcpp
