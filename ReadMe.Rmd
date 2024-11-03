@@ -58,3 +58,7 @@ A vignette is available here: https://github.com/alexkzw/HCVisR/blob/master/vign
 1. C. Bandt and B. Pompe. Permutation entropy: A natural complexity measure for time series. Physical Review Letters, 88:174102–1–174102–4, 2002. doi: 10.1103/PhysRevLett.88.174102.
 
 2. https://github.com/arey1911/StatOrdPattHxC
+
+3. https://CRAN.R-project.org/package=statcomp
+
+4. https://CRAN.R-project.org/package=DChaos
