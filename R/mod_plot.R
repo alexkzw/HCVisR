@@ -20,10 +20,13 @@ mod_plot_ui <- function(id) {
 #' @param id A namespace identifier for the plotting operations
 #' @param selected_series_data Data selected for plotting
 #' @param embedding_dimension The dimension used for embedding plots
+#' @param window_size The window size (number of points) for sliding window calculations
+#' @param step_size The step size (number of points) for moving the window
+#' @param delay The embedding delay for ordinal pattern analysis
 #' @import ggplot2
 #' @importFrom StatOrdPattHxC HShannon OPprob StatComplexity
 #' @export
-mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
+mod_plot_server <- function(id, selected_series_data, embedding_dimension, window_size, step_size, delay) {
     moduleServer(id, function(input, output, session) {
 
         # Ensure selected_series_data always returns a list of selected series
@@ -32,6 +35,29 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
             if (is.null(series_data)) return(NULL)
             return(series_data)
         })
+
+        # Helper function for sliding window H and C calculation
+        calculate_hc_sliding_window <- function(series, emb, win_size, step, delay) {
+            num_points <- length(series)
+            hc_results <- data.frame(H = numeric(), C = numeric(), Window = integer())
+            window_index <- 1
+
+            for (start in seq(1, num_points - win_size + 1, by = step)) {
+                end <- start + win_size - 1
+                window_data <- series[start:end]
+
+                # Calculate H and C for this window
+                probabilities <- OPprob(window_data, emb = emb)
+                H_value <- HShannon(probabilities)
+                C_value <- StatComplexity(probabilities)
+
+                # Store results
+                hc_results <- rbind(hc_results, data.frame(H = H_value, C = C_value, Window = window_index))
+                window_index <- window_index + 1
+            }
+
+            return(hc_results)
+        }
 
         # Time series plot
         output$plot_ts <- renderPlot({
@@ -52,25 +78,33 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
             p + theme_minimal()
         })
 
-        # H × C plane plot with user-selected embedding dimension
+        # H × C plane plot with user-selected embedding dimension and sliding window
         output$plot_hc <- renderPlotly({
             series_list <- series_data_list()
             req(series_list)
 
             emb <- embedding_dimension()
+            win_size <- window_size()
+            step <- step_size()
+            delay <- delay()
+
             validate(
-                need(emb >= 3 && emb <= 6, "Embedding dimension must be between 3 and 6.")
+                need(emb >= 3 && emb <= 6, "Embedding dimension must be between 3 and 6."),
+                need(win_size > 0 && step > 0, "Window size and step size must be positive.")
             )
 
-            hc_data <- data.frame(H = numeric(), C = numeric(), model = character(), Dimension = integer())
+            hc_data <- data.frame(H = numeric(), C = numeric(), model = character(), Window = integer())
 
-            # Calculate H and C for each selected time series
+            # Calculate H and C for each window in each selected time series
             for (i in seq_along(series_list)) {
                 ts_data <- series_list[[i]]
-                H_value <- HShannon(OPprob(ts_data$series, emb = emb))
-                C_value <- StatComplexity(OPprob(ts_data$series, emb = emb))
+                hc_results <- calculate_hc_sliding_window(ts_data$series, emb, win_size, step, delay)
 
-                hc_data <- rbind(hc_data, data.frame(H = H_value, C = C_value, model = ts_data$model, Dimension = emb))
+                # Add model name for each row
+                hc_results$model <- ts_data$model
+
+                # Combine data
+                hc_data <- rbind(hc_data, hc_results)
             }
 
             # Subset the LinfLsup data for plotting the boundaries
@@ -88,7 +122,7 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
                 add_lines(data = linf_data_lower, x = ~H, y = ~C, line = list(color = 'red'), hoverinfo = 'skip', showlegend = FALSE) %>%
                 add_lines(data = linf_data_upper, x = ~H, y = ~C, line = list(color = 'red'), hoverinfo = 'skip', showlegend = FALSE)
 
-            # Add each time series individually with a specified color and legend label
+            # Add each windowed H and C data for each time series with a color and legend label
             for (model_name in unique(hc_data$model)) {
                 model_data <- hc_data[hc_data$model == model_name, ]
                 plot <- plot %>%
@@ -101,11 +135,12 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
                         size = 3,
                         hovertemplate = paste(
                             model_name, '<br>',  # Display model name on hover
+                            'Window: %{text}<br>',
                             'H: %{x:.3f}<br>',
                             'C: %{y:.3f}<br>',
                             '<extra></extra>'
                         ),
-                        text = ~model_name,  # Include model name for hover
+                        text = ~Window,  # Display window number on hover
                         showlegend = TRUE  # Ensure legend appears even for one trace
                     )
             }
@@ -123,3 +158,4 @@ mod_plot_server <- function(id, selected_series_data, embedding_dimension) {
         })
     })
 }
+

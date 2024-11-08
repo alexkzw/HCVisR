@@ -35,7 +35,17 @@ app_ui <- function(request) {
                     column(12, mod_time_series_selection_ui("available_series")),
                     column(12, selectInput("embedding_dimension",
                                            "Select Embedding Dimension:",
-                                           choices = 3:6, selected = 3))
+                                           choices = 3:6, selected = 3)),
+                    #inputs for sliding window parameters
+                    column(12, numericInput("window_size",
+                                            "Window Size (N):",
+                                            value = 300, min = 300)),
+                    column(12, numericInput("step_size",
+                                            "Step Size (δ):",
+                                            value = 20, min = 20)),
+                    column(12, numericInput("delay",
+                                            "Embedding Delay (τ):",
+                                            value = 1, min = 1))
                 ),
                 width = 4  # Setting the width of the sidebar panel (responsive)
             ),

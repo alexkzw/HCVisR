@@ -24,6 +24,21 @@ app_server <- function(input, output, session) {
         as.numeric(input$embedding_dimension)
     })
 
+    # Reactive to track window size for sliding window calculation
+    window_size <- reactive({
+        as.numeric(input$window_size)
+    })
+
+    # Reactive to track the step size (δ) for sliding window calculations
+    step_size <- reactive({
+        as.numeric(input$step_size)
+    })
+
+    # Reactive to track the embedding delay (τ) for sliding window calculations
+    delay <- reactive({
+        as.numeric(input$delay)
+    })
+
     # Call the time series generation module
     mod_time_series_server("timeseries", available_series, series_counters)
 
@@ -36,5 +51,5 @@ app_server <- function(input, output, session) {
                                                              selected_series)
 
     # Call the plot module for both time series plot and H x C plane plot
-    mod_plot_server("plot", selected_series_data, embedding_dimension)
+    mod_plot_server("plot", selected_series_data, embedding_dimension, window_size, step_size, delay)
 }
